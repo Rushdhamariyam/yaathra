@@ -1,0 +1,232 @@
+{% extends "base.html" %}
+
+{% block title %}404 - Page Not Found | Yaathra{% endblock %}
+
+{% block content %}
+    <!-- 404 Hero Section -->
+    <section class="error-404">
+        <div class="container">
+            <div class="error-content" data-aos="fade-up">
+                <div class="error-illustration" data-aos="zoom-in" data-aos-delay="200">
+                    <div class="error-number">404</div>
+                    <div class="error-icon">
+                        <svg width="120" height="120" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <path d="M12 6v6l4 2"></path>
+                        </svg>
+                    </div>
+                </div>
+                
+                <div class="error-text" data-aos="fade-up" data-aos-delay="400">
+                    <h1>Oops! Page Not Found</h1>
+                    <p>The page you're looking for seems to have wandered off into the Kerala backwaters. Let's help you find your way back!</p>
+                    
+                    <div class="error-actions" data-aos="fade-up" data-aos-delay="600">
+                        <a href="{{ url_for('index') }}" class="btn btn-primary">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                                <polyline points="9 22 9 12 15 12 15 22"></polyline>
+                            </svg>
+                            Go Home
+                        </a>
+                        
+                        <a href="{{ url_for('explore') }}" class="btn btn-outline">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <path d="M12 6v6l4 2"></path>
+                            </svg>
+                            Explore Destinations
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Kerala Elements -->
+            <div class="kerala-elements">
+                <div class="element houseboat" data-aos="float" data-aos-delay="800">
+                    <svg width="60" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M2 12l3-3 3 3 4-4 4 4 3-3 3 3"></path>
+                        <path d="M2 12v8a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-8"></path>
+                    </svg>
+                </div>
+                
+                <div class="element coconut" data-aos="float" data-aos-delay="1000">
+                    <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <path d="M12 2v10l4 2"></path>
+                    </svg>
+                </div>
+                
+                <div class="element tea-leaf" data-aos="float" data-aos-delay="1200">
+                    <svg width="50" height="50" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
+                    </svg>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Popular Destinations -->
+    <section class="popular-destinations">
+        <div class="container">
+            <h2 data-aos="fade-up">Popular Kerala Destinations</h2>
+            <p data-aos="fade-up" data-aos-delay="100">Maybe you were looking for one of these amazing places?</p>
+            
+            <div class="destinations-grid">
+                <div class="destination-card" data-aos="zoom-in" data-aos-delay="200">
+                    <img src="https://picsum.photos/seed/munnar/300/200.jpg" alt="Munnar">
+                    <h3>Munnar</h3>
+                    <p>Tea Gardens & Hill Station</p>
+                    <a href="{{ url_for('place_detail', place_name='idukki') }}" class="btn btn-sm btn-outline">Explore</a>
+                </div>
+                
+                <div class="destination-card" data-aos="zoom-in" data-aos-delay="300">
+                    <img src="https://picsum.photos/seed/alleppey/300/200.jpg" alt="Alleppey">
+                    <h3>Alleppey</h3>
+                    <p>Backwaters & Houseboats</p>
+                    <a href="{{ url_for('place_detail', place_name='alappuzha') }}" class="btn btn-sm btn-outline">Explore</a>
+                </div>
+                
+                <div class="destination-card" data-aos="zoom-in" data-aos-delay="400">
+                    <img src="https://picsum.photos/seed/kovalam/300/200.jpg" alt="Kovalam">
+                    <h3>Kovalam</h3>
+                    <p>Beaches & Sunset Views</p>
+                    <a href="{{ url_for('place_detail', place_name='thiruvananthapuram') }}" class="btn btn-sm btn-outline">Explore</a>
+                </div>
+                
+                <div class="destination-card" data-aos="zoom-in" data-aos-delay="500">
+                    <img src="https://picsum.photos/seed/wayanad/300/200.jpg" alt="Wayanad">
+                    <h3>Wayanad</h3>
+                    <p>Wildlife & Nature</p>
+                    <a href="{{ url_for('place_detail', place_name='wayanad') }}" class="btn btn-sm btn-outline">Explore</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Search Help -->
+    <section class="search-help">
+        <div class="container">
+            <div class="help-content" data-aos="fade-up">
+                <h2>Still Can't Find What You're Looking For?</h2>
+                <p>Try searching for your destination or browse our complete collection of Kerala experiences.</p>
+                
+                <div class="search-box" data-aos="fade-up" data-aos-delay="200">
+                    <form action="{{ url_for('explore') }}" method="GET">
+                        <div class="search-input-wrapper">
+                            <svg class="search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <circle cx="11" cy="11" r="8"></circle>
+                                <path d="m21 21-4.35-4.35"></path>
+                            </svg>
+                            <input type="text" name="search" placeholder="Search destinations, activities, or experiences..." required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Search</button>
+                    </form>
+                </div>
+                
+                <div class="quick-links" data-aos="fade-up" data-aos-delay="400">
+                    <h3>Quick Links</h3>
+                    <div class="links-grid">
+                        <a href="{{ url_for('plan') }}" class="link-item">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                                <polyline points="14 2 14 8 20 8"></polyline>
+                            </svg>
+                            Plan Your Trip
+                        </a>
+                        
+                        <a href="{{ url_for('explore') }}" class="link-item">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <path d="M12 6v6l4 2"></path>
+                            </svg>
+                            Explore All Places
+                        </a>
+                        
+                        <a href="{{ url_for('dashboard') }}" class="link-item">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <rect x="3" y="3" width="7" height="7"></rect>
+                                <rect x="14" y="3" width="7" height="7"></rect>
+                                <rect x="14" y="14" width="7" height="7"></rect>
+                                <rect x="3" y="14" width="7" height="7"></rect>
+                            </svg>
+                            Dashboard
+                        </a>
+                        
+                        <a href="{{ url_for('index') }}" class="link-item">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                                <polyline points="9 22 9 12 15 12 15 22"></polyline>
+                            </svg>
+                            Home
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// Add some interactive elements to the 404 page
+document.addEventListener('DOMContentLoaded', function() {
+    // Animate the error number on hover
+    const errorNumber = document.querySelector('.error-number');
+    if (errorNumber) {
+        errorNumber.addEventListener('mouseenter', function() {
+            this.style.transform = 'scale(1.1) rotate(5deg)';
+            this.style.transition = 'all 0.3s ease';
+        });
+        
+        errorNumber.addEventListener('mouseleave', function() {
+            this.style.transform = 'scale(1) rotate(0deg)';
+        });
+    }
+    
+    // Add click animation to destination cards
+    const destinationCards = document.querySelectorAll('.destination-card');
+    destinationCards.forEach(card => {
+        card.addEventListener('click', function(e) {
+            if (!e.target.classList.contains('btn')) {
+                this.style.transform = 'scale(0.95)';
+                setTimeout(() => {
+                    this.style.transform = 'scale(1)';
+                }, 150);
+            }
+        });
+    });
+    
+    // Parallax effect for Kerala elements
+    const elements = document.querySelectorAll('.kerala-elements .element');
+    window.addEventListener('scroll', () => {
+        const scrolled = window.pageYOffset;
+        elements.forEach((element, index) => {
+            const speed = 0.5 + (index * 0.1);
+            element.style.transform = `translateY(${scrolled * speed}px)`;
+        });
+    });
+});
+
+// Custom AOS animation for floating elements
+AOS.init({
+    duration: 800,
+    once: true,
+    offset: 100
+});
+
+// Add floating animation keyframes dynamically
+const style = document.createElement('style');
+style.textContent = `
+    @keyframes float {
+        0%, 100% { transform: translateY(0px); }
+        50% { transform: translateY(-20px); }
+    }
+    
+    [data-aos="float"] {
+        animation: float 3s ease-in-out infinite;
+    }
+`;
+document.head.appendChild(style);
+</script>
+{% endblock %}

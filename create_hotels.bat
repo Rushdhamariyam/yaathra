@@ -1,0 +1,3 @@
+@echo off
+echo Generating Kerala hotel dataset...
+python -c "import json; hotels = []; [hotels.append({'name': 'Test Hotel', 'place_id': 1, 'city': 'Thiruvananthapuram', 'address': 'Test Address', 'star_rating': 4.0, 'price_per_night': 3000, 'amenities': 'Wi-Fi,AC', 'contact': '+91-1234567890', 'image_prompt': 'Test prompt'}) for _ in range(100)]; print('Generated 100 hotel entries for Kerala destinations'); json.dump(hotels, open('kerala_hotels_test.json', 'w')); print('Saved to kerala_hotels_test.json')"

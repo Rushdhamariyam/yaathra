@@ -1,0 +1,527 @@
+{% extends "base.html" %}
+
+{% block title %}Your Trip Plan - Yaathra{% endblock %}
+
+{% block content %}
+    <!-- Page Header -->
+    <section class="page-header">
+        <div class="container">
+            <h1 data-aos="fade-up">Your Kerala Trip Plan</h1>
+            <p data-aos="fade-up" data-aos-delay="100">
+                Here's your personalized itinerary for {{ plan.place.title if plan and plan.place else destination.title() if destination else destination }}
+            </p>
+        </div>
+    </section>
+
+    <!-- Trip Plan Summary -->
+    <section class="trip-summary">
+        <div class="container">
+            <div class="summary-cards" data-aos="fade-up">
+                <div class="summary-card">
+                    <div class="summary-icon">
+                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                            <circle cx="12" cy="10" r="3"></circle>
+                        </svg>
+                    </div>
+                    <div class="summary-content">
+                        <h3>Destination</h3>
+                        <p>{{ plan.place.title if plan and plan.place else destination.title() if destination else destination }}</p>
+                    </div>
+                </div>
+                
+                <div class="summary-card">
+                    <div class="summary-icon">
+                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <path d="M12 6v6l4 2"></path>
+                        </svg>
+                    </div>
+                    <div class="summary-content">
+                        <h3>Duration</h3>
+                        <p>{{ days }} {{ 'Day' if days == 1 else 'Days' }}</p>
+                    </div>
+                </div>
+                
+                <div class="summary-card">
+                    <div class="summary-icon">
+                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <line x1="12" y1="1" x2="12" y2="23"></line>
+                            <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+                        </svg>
+                    </div>
+                    <div class="summary-content">
+                        <h3>Budget Level</h3>
+                        <p>{{ budget.title() if budget else 'Medium' }}</p>
+                    </div>
+                </div>
+                
+                <div class="summary-card">
+                    <div class="summary-icon">
+                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                            <polyline points="14 2 14 8 20 8"></polyline>
+                        </svg>
+                    </div>
+                    <div class="summary-content">
+                        <h3>Best Time</h3>
+                        <p>{{ plan.place.best_time if plan and plan.place and plan.place.best_time else 'October to March' }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Recommended Hotels -->
+    {% if plan and plan.hotels %}
+    <section class="recommended-hotels">
+        <div class="container">
+            <h2 data-aos="fade-up">Recommended Hotels</h2>
+            <p data-aos="fade-up" data-aos-delay="100">Based on your {{ budget if budget else 'medium' }} budget and preferences</p>
+            
+            <div class="hotels-grid">
+                {% for hotel in plan.hotels %}
+                <div class="hotel-recommendation" data-aos="zoom-in" data-aos-delay="{{ loop.index * 100 }}">
+                    <div class="hotel-image">
+                        <img src="https://picsum.photos/seed/{{ hotel.name.replace(' ', '') if hotel.name else 'hotel' }}/300/200.jpg" 
+                             alt="{{ hotel.name if hotel.name else 'Hotel' }}">
+                        <div class="hotel-rating">
+                            <span class="stars">
+                                {% if hotel.rating %}
+                                    {% for i in range(5) %}
+                                        {% if i < hotel.rating %}
+                                            ★
+                                        {% else %}
+                                            ☆
+                                        {% endif %}
+                                    {% endfor %}
+                                {% else %}
+                                    ★★★★★
+                                {% endif %}
+                            </span>
+                            <span class="rating-text">{{ hotel.rating if hotel.rating else '4.0' }}/5</span>
+                        </div>
+                    </div>
+                    <div class="hotel-details">
+                        <h3>{{ hotel.name if hotel.name else 'Hotel Name' }}</h3>
+                        <div class="hotel-price">
+                            <span class="price">₹{{ hotel.price if hotel.price else '5000' }}</span>
+                            <span class="price-unit">per night</span>
+                        </div>
+                        <button class="btn btn-primary btn-sm" onclick="showHotelBooking('{{ hotel.name if hotel.name else 'Hotel' }}')">
+                            Book Now
+                        </button>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+    {% else %}
+    <section class="recommended-hotels">
+        <div class="container">
+            <h2 data-aos="fade-up">Recommended Hotels</h2>
+            <p data-aos="fade-up" data-aos-delay="100">No hotels found for this destination. Please check back later.</p>
+        </div>
+    </section>
+    {% endif %}
+
+    <!-- Detailed Itinerary -->
+    <section class="itinerary">
+        <div class="container">
+            <h2 data-aos="fade-up">Day-wise Itinerary</h2>
+            
+            <div class="itinerary-grid">
+                {% if plan and plan.itinerary %}
+                    {% for day_plan in plan.itinerary %}
+                    <div class="itinerary-card" data-aos="zoom-in" data-aos-delay="{{ loop.index * 100 }}">
+                        <div class="itinerary-image">
+                            {% set image_path = day_plan.image if day_plan.image else 'images/default/default1.jpg' %}
+                            <img src="{{ url_for('static', filename=image_path) }}" 
+                                 alt="{{ day_plan.title }}"
+                                 onerror="this.src='/static/images/default/default1.jpg'">
+                            <div class="itinerary-day-badge">
+                                <span>{{ day_plan.day }}</span>
+                            </div>
+                        </div>
+                        <div class="itinerary-content">
+                            <h3>{{ day_plan.title }}</h3>
+                            <p>{{ day_plan.description }}</p>
+                        </div>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="itinerary-card" data-aos="fade-up">
+                        <div class="itinerary-content">
+                            <p>No itinerary available. Please try again.</p>
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </section>
+
+    <!-- Budget Breakdown -->
+    <section class="budget-breakdown">
+        <div class="container">
+            <h2 data-aos="fade-up">Budget Breakdown</h2>
+            
+            <div class="budget-chart" data-aos="zoom-in">
+                {% if plan and plan.budget_breakdown %}
+                    <div class="budget-item">
+                        <div class="budget-label">Accommodation</div>
+                        <div class="budget-bar">
+                            <div class="budget-fill" data-width="{{ plan.budget_breakdown.accommodation.replace('%', '') if plan.budget_breakdown.accommodation else '40' }}"></div>
+                        </div>
+                        <div class="budget-percent">{{ plan.budget_breakdown.accommodation if plan.budget_breakdown.accommodation else '40%' }}</div>
+                    </div>
+                    <div class="budget-item">
+                        <div class="budget-label">Food</div>
+                        <div class="budget-bar">
+                            <div class="budget-fill" data-width="{{ plan.budget_breakdown.food.replace('%', '') if plan.budget_breakdown.food else '25' }}"></div>
+                        </div>
+                        <div class="budget-percent">{{ plan.budget_breakdown.food if plan.budget_breakdown.food else '25%' }}</div>
+                    </div>
+                    <div class="budget-item">
+                        <div class="budget-label">Transportation</div>
+                        <div class="budget-bar">
+                            <div class="budget-fill" data-width="{{ plan.budget_breakdown.transportation.replace('%', '') if plan.budget_breakdown.transportation else '20' }}"></div>
+                        </div>
+                        <div class="budget-percent">{{ plan.budget_breakdown.transportation if plan.budget_breakdown.transportation else '20%' }}</div>
+                    </div>
+                    <div class="budget-item">
+                        <div class="budget-label">Activities</div>
+                        <div class="budget-bar">
+                            <div class="budget-fill" data-width="{{ plan.budget_breakdown.activities.replace('%', '') if plan.budget_breakdown.activities else '15' }}"></div>
+                        </div>
+                        <div class="budget-percent">{{ plan.budget_breakdown.activities if plan.budget_breakdown.activities else '15%' }}</div>
+                    </div>
+                {% endif %}
+            </div>
+            
+            <div class="budget-tips" data-aos="fade-up" data-aos-delay="100">
+                <h3>Money-Saving Tips</h3>
+                <ul>
+                    <li>Book accommodations in advance for better rates</li>
+                    <li>Try local restaurants for authentic and affordable food</li>
+                    <li>Use public transportation where possible</li>
+                    <li>Look for combo tickets for multiple attractions</li>
+                    <li>Travel during off-season for lower prices</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <!-- Suggested Activities -->
+    <section class="suggested-activities">
+        <div class="container">
+            <h2 data-aos="fade-up">Suggested Activities</h2>
+            
+            <div class="activities-grid">
+                {% if plan and plan.suggested_activities %}
+                    {% for activity in plan.suggested_activities %}
+                    <div class="activity-card" data-aos="zoom-in" data-aos-delay="{{ loop.index * 100 }}">
+                        <div class="activity-content">
+                            <h4>{{ activity }}</h4>
+                        </div>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <p>No activities suggested.</p>
+                {% endif %}
+            </div>
+        </div>
+    </section>
+
+    <!-- Travel Tips -->
+    <section class="travel-tips-section">
+        <div class="container">
+            <h2 data-aos="fade-up">Travel Tips for {{ plan.place.title if plan and plan.place else destination.title() if destination else destination }}</h2>
+            
+            <div class="tips-grid">
+                <div class="tip-card" data-aos="zoom-in">
+                    <div class="tip-icon">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <path d="M12 16v-4"></path>
+                            <path d="M12 8h.01"></path>
+                        </svg>
+                    </div>
+                    <p>Book accommodations in advance for better rates</p>
+                </div>
+                <div class="tip-card" data-aos="zoom-in" data-aos-delay="100">
+                    <div class="tip-icon">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <path d="M12 16v-4"></path>
+                            <path d="M12 8h.01"></path>
+                        </svg>
+                    </div>
+                    <p>Try local restaurants for authentic and affordable food</p>
+                </div>
+                <div class="tip-card" data-aos="zoom-in" data-aos-delay="200">
+                    <div class="tip-icon">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <path d="M12 16v-4"></path>
+                            <path d="M12 8h.01"></path>
+                        </svg>
+                    </div>
+                    <p>Use public transportation where possible</p>
+                </div>
+                <div class="tip-card" data-aos="zoom-in" data-aos-delay="300">
+                    <div class="tip-icon">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <path d="M12 16v-4"></path>
+                            <path d="M12 8h.01"></path>
+                        </svg>
+                    </div>
+                    <p>Carry comfortable walking shoes and light cotton clothes</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Action Section -->
+    <section class="action-section">
+        <div class="container">
+            <div class="action-content" data-aos="zoom-in">
+                <h2>Ready for Your Kerala Adventure?</h2>
+                <p>Your personalized trip plan is ready! Save this plan and start preparing for an unforgettable journey.</p>
+                
+                <div class="action-buttons">
+                    {% if 'user_id' in session %}
+                        <button class="btn btn-primary" onclick="window.print()">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polyline points="6 9 6 2 18 2 18 9"></polyline>
+                                <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path>
+                                <rect x="6" y="14" width="12" height="8"></rect>
+                            </svg>
+                            Print Plan
+                        </button>
+                        <button class="btn btn-outline" onclick="addToCalendar()">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                                <line x1="16" y1="2" x2="16" y2="6"></line>
+                                <line x1="8" y1="2" x2="8" y2="6"></line>
+                                <line x1="3" y1="10" x2="21" y2="10"></line>
+                            </svg>
+                            Add to Calendar
+                        </button>
+                        <button class="btn btn-outline" onclick="shareTripPlan()">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <circle cx="18" cy="5" r="3"></circle>
+                                <circle cx="6" cy="12" r="3"></circle>
+                                <circle cx="18" cy="19" r="3"></circle>
+                                <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
+                                <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
+                            </svg>
+                            Share Plan
+                        </button>
+                    {% else %}
+                        <a href="{{ url_for('signup') }}" class="btn btn-primary">
+                            Sign Up to Save Plan
+                        </a>
+                    {% endif %}
+                    
+                    <a href="{{ url_for('explore') }}" class="btn btn-outline">
+                        Explore More Destinations
+                    </a>
+                    
+                    <a href="{{ url_for('plan') }}" class="btn btn-outline">
+                        Plan Another Trip
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Travel Checklist -->
+    <section class="travel-checklist">
+        <div class="container">
+            <h2 data-aos="fade-up">Travel Checklist</h2>
+            
+            <div class="checklist-grid">
+                <div class="checklist-section" data-aos="fade-right">
+                    <h3>Documents</h3>
+                    <div class="checklist-items">
+                        <label class="checklist-item">
+                            <input type="checkbox">
+                            <span>Valid ID Proof</span>
+                        </label>
+                        <label class="checklist-item">
+                            <input type="checkbox">
+                            <span>Travel Tickets</span>
+                        </label>
+                        <label class="checklist-item">
+                            <input type="checkbox">
+                            <span>Hotel Bookings</span>
+                        </label>
+                        <label class="checklist-item">
+                            <input type="checkbox">
+                            <span>Travel Insurance</span>
+                        </label>
+                    </div>
+                </div>
+                
+                <div class="checklist-section" data-aos="fade-right" data-aos-delay="100">
+                    <h3>Clothing</h3>
+                    <div class="checklist-items">
+                        <label class="checklist-item">
+                            <input type="checkbox">
+                            <span>Light Cotton Clothes</span>
+                        </label>
+                        <label class="checklist-item">
+                            <input type="checkbox">
+                            <span>Comfortable Walking Shoes</span>
+                        </label>
+                        <label class="checklist-item">
+                            <input type="checkbox">
+                            <span>Raincoat/Umbrella</span>
+                        </label>
+                        <label class="checklist-item">
+                            <input type="checkbox">
+                            <span>Sunglasses & Hat</span>
+                        </label>
+                    </div>
+                </div>
+                
+                <div class="checklist-section" data-aos="fade-right" data-aos-delay="200">
+                    <h3>Essentials</h3>
+                    <div class="checklist-items">
+                        <label class="checklist-item">
+                            <input type="checkbox">
+                            <span>First Aid Kit</span>
+                        </label>
+                        <label class="checklist-item">
+                            <input type="checkbox">
+                            <span>Camera & Charger</span>
+                        </label>
+                        <label class="checklist-item">
+                            <input type="checkbox">
+                            <span>Power Bank</span>
+                        </label>
+                        <label class="checklist-item">
+                            <input type="checkbox">
+                            <span>Water Bottle</span>
+                        </label>
+                    </div>
+                </div>
+                
+                <div class="checklist-section" data-aos="fade-right" data-aos-delay="300">
+                    <h3>Health</h3>
+                    <div class="checklist-items">
+                        <label class="checklist-item">
+                            <input type="checkbox">
+                            <span>Personal Medications</span>
+                        </label>
+                        <label class="checklist-item">
+                            <input type="checkbox">
+                            <span>Hand Sanitizer</span>
+                        </label>
+                        <label class="checklist-item">
+                            <input type="checkbox">
+                            <span>Insect Repellent</span>
+                        </label>
+                        <label class="checklist-item">
+                            <input type="checkbox">
+                            <span>Sunscreen</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// Set dynamic budget bar widths
+document.addEventListener('DOMContentLoaded', function() {
+    const budgetFills = document.querySelectorAll('.budget-fill[data-width]');
+    budgetFills.forEach(fill => {
+        const width = fill.getAttribute('data-width');
+        fill.style.width = width + '%';
+    });
+});
+
+// Hotel booking functionality
+function showHotelBooking(hotelName) {
+    const modalContent = `
+        <div class="hotel-booking-modal">
+            <h3>Book ${hotelName}</h3>
+            <p>Hotel booking feature coming soon! For now, please contact the hotel directly.</p>
+            <div class="booking-actions">
+                <button onclick="closeModal()" class="btn btn-outline">Close</button>
+                <button onclick="showNotification('Booking feature coming soon!', 'info')" class="btn btn-primary">Notify Me</button>
+            </div>
+        </div>
+    `;
+    openModal(modalContent);
+}
+
+// Checklist functionality
+document.querySelectorAll('.checklist-item input').forEach(checkbox => {
+    checkbox.addEventListener('change', function() {
+        const label = this.parentElement;
+        if (this.checked) {
+            label.classList.add('checked');
+        } else {
+            label.classList.remove('checked');
+        }
+        
+        // Update progress
+        updateChecklistProgress();
+    });
+});
+
+function updateChecklistProgress() {
+    const total = document.querySelectorAll('.checklist-item input').length;
+    const checked = document.querySelectorAll('.checklist-item input:checked').length;
+    const progress = (checked / total) * 100;
+    
+    // You could display this progress to the user
+    console.log(`Checklist Progress: ${Math.round(progress)}%`);
+}
+
+// Print functionality
+function printPlan() {
+    window.print();
+}
+
+// Smooth scroll to sections
+document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+        const target = document.querySelector(this.getAttribute('href'));
+        if (target) {
+            target.scrollIntoView({
+                behavior: 'smooth',
+                block: 'start'
+            });
+        }
+    });
+});
+
+// Add to calendar functionality
+function addToCalendar() {
+    showNotification('Calendar integration coming soon!', 'info');
+}
+
+// Share trip plan
+function shareTripPlan() {
+    if (navigator.share) {
+        navigator.share({
+            title: 'My Kerala Trip Plan',
+            text: 'Check out my amazing Kerala travel plan!',
+            url: window.location.href
+        }).catch(err => console.log('Error sharing:', err));
+    } else {
+        // Fallback - copy to clipboard
+        navigator.clipboard.writeText(window.location.href);
+        showNotification('Trip plan link copied to clipboard!', 'success');
+    }
+}
+</script>
+{% endblock %}

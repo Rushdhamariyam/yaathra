@@ -1,0 +1,340 @@
+{% extends "base.html" %}
+
+{% block title %}Sign Up - Yaathra{% endblock %}
+
+{% block content %}
+    <!-- Signup Page Header -->
+    <section class="auth-header">
+        <div class="container">
+            <div class="auth-content" data-aos="fade-up">
+                <h1>Join Yaathra</h1>
+                <p>Create your account and start planning unforgettable Kerala adventures</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Signup Form -->
+    <section class="auth-form">
+        <div class="container">
+            <div class="auth-grid">
+                <!-- Signup Form -->
+                <div class="auth-card" data-aos="fade-right">
+                    <div class="auth-card-header">
+                        <h2>Create Account</h2>
+                        <p>Fill in your details to get started</p>
+                    </div>
+                    
+                    <form method="POST" action="{{ url_for('signup') }}" class="signup-form">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="username">Username *</label>
+                                <input type="text" 
+                                       id="username" 
+                                       name="username" 
+                                       required 
+                                       placeholder="Choose a username"
+                                       autocomplete="username">
+                                <small>Username must be unique and at least 3 characters</small>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="email">Email Address *</label>
+                            <input type="email" 
+                                   id="email" 
+                                   name="email" 
+                                   required 
+                                   placeholder="Enter your email"
+                                   autocomplete="email">
+                            <small>We'll use this to send you trip updates</small>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="password">Password *</label>
+                                <input type="password" 
+                                       id="password" 
+                                       name="password" 
+                                       required 
+                                       placeholder="Create a password"
+                                       autocomplete="new-password">
+                                <div class="password-toggle" onclick="togglePassword('password')">
+                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                                        <circle cx="12" cy="12" r="3"></circle>
+                                    </svg>
+                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display: none;">
+                                        <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
+                                        <line x1="1" y1="1" x2="23" y2="23"></line>
+                                    </svg>
+                                </div>
+                                <small>Password must be at least 6 characters</small>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="confirm_password">Confirm Password *</label>
+                                <input type="password" 
+                                       id="confirm_password" 
+                                       name="confirm_password" 
+                                       required 
+                                       placeholder="Confirm your password"
+                                       autocomplete="new-password">
+                                <div class="password-toggle" onclick="togglePassword('confirm_password')">
+                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                                        <circle cx="12" cy="12" r="3"></circle>
+                                    </svg>
+                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display: none;">
+                                        <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
+                                        <line x1="1" y1="1" x2="23" y2="23"></line>
+                                    </svg>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="checkbox-label">
+                                <input type="checkbox" name="terms" required>
+                                <span>I agree to the <a href="#" class="link">Terms of Service</a> and <a href="#" class="link">Privacy Policy</a></span>
+                            </label>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="checkbox-label">
+                                <input type="checkbox" name="newsletter">
+                                <span>Send me travel tips and exclusive offers</span>
+                            </label>
+                        </div>
+                        
+                        <button type="submit" class="btn btn-primary btn-full">Create Account</button>
+                    </form>
+                    
+                    <div class="auth-divider">
+                        <span>OR</span>
+                    </div>
+                    
+                    <div class="social-login">
+                        <button class="btn btn-social btn-google">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+                                <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                                <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
+                                <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+                            </svg>
+                            Sign up with Google
+                        </button>
+                    </div>
+                    
+                    <div class="auth-footer">
+                        <p>Already have an account? <a href="{{ url_for('login') }}">Login</a></p>
+                    </div>
+                </div>
+
+                <!-- Benefits -->
+                <div class="auth-features" data-aos="fade-left">
+                    <div class="feature-highlight">
+                        <h3>What You Get</h3>
+                        <p>Join thousands of travelers exploring Kerala with Yaathra</p>
+                    </div>
+                    
+                    <div class="benefits-list">
+                        <div class="benefit-item">
+                            <div class="benefit-number">1</div>
+                            <div class="benefit-content">
+                                <h4>Personalized Trip Planning</h4>
+                                <p>Get custom itineraries based on your preferences and budget</p>
+                            </div>
+                        </div>
+                        
+                        <div class="benefit-item">
+                            <div class="benefit-number">2</div>
+                            <div class="benefit-content">
+                                <h4>Save & Organize</h4>
+                                <p>Save destinations, create wishlists, and organize your travel plans</p>
+                            </div>
+                        </div>
+                        
+                        <div class="benefit-item">
+                            <div class="benefit-number">3</div>
+                            <div class="benefit-content">
+                                <h4>Exclusive Deals</h4>
+                                <p>Access special offers and discounts on hotels and activities</p>
+                            </div>
+                        </div>
+                        
+                        <div class="benefit-item">
+                            <div class="benefit-number">4</div>
+                            <div class="benefit-content">
+                                <h4>Travel Community</h4>
+                                <p>Connect with other travelers and share experiences</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="stats">
+                        <div class="stat-item">
+                            <div class="stat-number">10,000+</div>
+                            <div class="stat-label">Happy Travelers</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number">50+</div>
+                            <div class="stat-label">Destinations</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number">1000+</div>
+                            <div class="stat-label">Trip Plans Created</div>
+                        </div>
+                    </div>
+                    
+                    <div class="trust-badges">
+                        <h4>Trusted by Travelers</h4>
+                        <div class="badges">
+                            <div class="badge">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M12 2L2 7v10c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V7l-10-5z"></path>
+                                </svg>
+                                <span>Secure</span>
+                            </div>
+                            <div class="badge">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
+                                </svg>
+                                <span>Verified</span>
+                            </div>
+                            <div class="badge">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                                    <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                                </svg>
+                                <span>Reliable</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function togglePassword(fieldId) {
+    const passwordInput = document.getElementById(fieldId);
+    const toggleContainer = passwordInput.nextElementSibling;
+    const toggleIcons = toggleContainer.querySelectorAll('svg');
+    
+    if (passwordInput.type === 'password') {
+        passwordInput.type = 'text';
+        toggleIcons[0].style.display = 'none';
+        toggleIcons[1].style.display = 'block';
+    } else {
+        passwordInput.type = 'password';
+        toggleIcons[0].style.display = 'block';
+        toggleIcons[1].style.display = 'none';
+    }
+}
+
+// Password strength checker
+document.getElementById('password').addEventListener('input', function() {
+    const password = this.value;
+    const strength = checkPasswordStrength(password);
+    updatePasswordStrength(strength);
+});
+
+function checkPasswordStrength(password) {
+    let strength = 0;
+    
+    if (password.length >= 6) strength++;
+    if (password.length >= 10) strength++;
+    if (/[a-z]/.test(password) && /[A-Z]/.test(password)) strength++;
+    if (/[0-9]/.test(password)) strength++;
+    if (/[^a-zA-Z0-9]/.test(password)) strength++;
+    
+    return strength;
+}
+
+function updatePasswordStrength(strength) {
+    const strengthText = ['Very Weak', 'Weak', 'Fair', 'Good', 'Strong'][strength];
+    const strengthColor = ['#ff4444', '#ff8800', '#ffbb33', '#00C851', '#007E33'][strength];
+    
+    // You could display this to the user
+    console.log(`Password Strength: ${strengthText}`);
+}
+
+// Password confirmation validation
+document.getElementById('confirm_password').addEventListener('input', function() {
+    const password = document.getElementById('password').value;
+    const confirmPassword = this.value;
+    
+    if (confirmPassword && password !== confirmPassword) {
+        this.setCustomValidity('Passwords do not match');
+    } else {
+        this.setCustomValidity('');
+    }
+});
+
+// Form validation
+document.querySelector('.signup-form').addEventListener('submit', function(e) {
+    const username = document.getElementById('username').value.trim();
+    const email = document.getElementById('email').value.trim();
+    const password = document.getElementById('password').value;
+    const confirmPassword = document.getElementById('confirm_password').value;
+    const terms = document.querySelector('input[name="terms"]').checked;
+    
+    // Username validation
+    if (username.length < 3) {
+        e.preventDefault();
+        alert('Username must be at least 3 characters long');
+        return false;
+    }
+    
+    // Email validation
+    if (!isValidEmail(email)) {
+        e.preventDefault();
+        alert('Please enter a valid email address');
+        return false;
+    }
+    
+    // Password validation
+    if (password.length < 6) {
+        e.preventDefault();
+        alert('Password must be at least 6 characters long');
+        return false;
+    }
+    
+    // Password confirmation
+    if (password !== confirmPassword) {
+        e.preventDefault();
+        alert('Passwords do not match');
+        return false;
+    }
+    
+    // Terms validation
+    if (!terms) {
+        e.preventDefault();
+        alert('You must agree to the Terms of Service and Privacy Policy');
+        return false;
+    }
+    
+    return true;
+});
+
+function isValidEmail(email) {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+}
+
+// Add input animations
+document.querySelectorAll('input').forEach(input => {
+    input.addEventListener('focus', function() {
+        this.parentElement.classList.add('focused');
+    });
+    
+    input.addEventListener('blur', function() {
+        if (!this.value) {
+            this.parentElement.classList.remove('focused');
+        }
+    });
+});
+</script>
+{% endblock %}

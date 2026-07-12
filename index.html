@@ -1,0 +1,171 @@
+{% extends "base.html" %}
+
+{% block title %}Yaathra - Discover Kerala's Magic{% endblock %}
+
+{% block content %}
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-overlay"></div>
+        <div class="hero-content">
+            <h1 data-aos="fade-up" data-aos-duration="1000">Yaathra</h1>
+            <p data-aos="fade-up" data-aos-duration="1000" data-aos-delay="200">
+                Discover the enchanting beauty of Kerala - God's Own Country
+            </p>
+            <div class="hero-buttons" data-aos="fade-up" data-aos-duration="1000" data-aos-delay="400">
+                <a href="{{ url_for('explore') }}" class="btn btn-primary">Explore Destinations</a>
+                <a href="{{ url_for('plan') }}" class="btn btn-secondary">Plan Your Trip</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Featured Destinations -->
+    <section class="featured">
+        <div class="container">
+            <h2 class="section-title" data-aos="fade-up">Featured Destinations</h2>
+            <p class="section-subtitle" data-aos="fade-up" data-aos-delay="100">
+                Explore the most beautiful places Kerala has to offer
+            </p>
+            
+            <div class="featured-grid">
+                {% for place in featured_places %}
+                <div class="place-card" data-aos="zoom-in" data-aos-delay="{{ loop.index * 100 }}">
+                    <div class="place-image">
+                        {% set image_path = place.hero_image if place.hero_image else 'images/' + place.image %}
+                        <img src="{{ url_for('static', filename=image_path) }}" 
+                             alt="{{ place.title }}" 
+                             onerror="this.src='/static/images/default/default1.jpg'">
+                        <div class="place-category">{{ place.category.title() }}</div>
+                    </div>
+                    <div class="place-content">
+                        <h3>{{ place.title }}</h3>
+                        <p>{{ place.description[:100] }}...</p>
+                        <div class="place-meta">
+                            <span class="budget">{{ place.avg_budget }} Budget</span>
+                            <span class="time">{{ place.best_time }}</span>
+                        </div>
+                        <a href="{{ url_for('place_detail', place_name=place.name) }}" class="btn btn-outline">
+                            Explore More
+                        </a>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            
+            <div class="text-center" data-aos="fade-up" data-aos-delay="300">
+                <a href="{{ url_for('explore') }}" class="btn btn-primary btn-large">View All Destinations</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Why Choose Yaathra -->
+    <section class="why-choose">
+        <div class="container">
+            <h2 class="section-title" data-aos="fade-up">Why Choose Yaathra?</h2>
+            
+            <div class="features-grid">
+                <div class="feature-card" data-aos="fade-up" data-aos-delay="100">
+                    <div class="feature-icon">
+                        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                            <polyline points="9 22 9 12 15 12 15 22"></polyline>
+                        </svg>
+                    </div>
+                    <h3>Authentic Experiences</h3>
+                    <p>Discover the real Kerala with curated experiences that showcase local culture and traditions.</p>
+                </div>
+                
+                <div class="feature-card" data-aos="fade-up" data-aos-delay="200">
+                    <div class="feature-icon">
+                        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M12 2L2 7l10 5 10-5-10-5z"></path>
+                            <path d="M2 17l10 5 10-5"></path>
+                            <path d="M2 12l10 5 10-5"></path>
+                        </svg>
+                    </div>
+                    <h3>Expert Planning</h3>
+                    <p>Our intelligent trip planner creates personalized itineraries based on your preferences.</p>
+                </div>
+                
+                <div class="feature-card" data-aos="fade-up" data-aos-delay="300">
+                    <div class="feature-icon">
+                        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
+                        </svg>
+                    </div>
+                    <h3>Trusted Guide</h3>
+                    <p>Comprehensive information about destinations, activities, and local insights.</p>
+                </div>
+                
+                <div class="feature-card" data-aos="fade-up" data-aos-delay="400">
+                    <div class="feature-icon">
+                        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                        </svg>
+                    </div>
+                    <h3>24/7 Support</h3>
+                    <p>Get assistance whenever you need it during your Kerala journey.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Kerala Highlights -->
+    <section class="highlights">
+        <div class="container">
+            <h2 class="section-title" data-aos="fade-up">Kerala Highlights</h2>
+            
+            <div class="highlights-grid">
+                <div class="highlight-item" data-aos="fade-right">
+                    <div class="highlight-content">
+                        <h3>Backwaters</h3>
+                        <p>Experience the serene beauty of Kerala's famous backwaters with houseboat cruises through tranquil waters.</p>
+                    </div>
+                    <div class="highlight-image">
+                        <img src="https://picsum.photos/seed/backwaters/300/200.jpg" alt="Kerala Backwaters">
+                    </div>
+                </div>
+                
+                <div class="highlight-item" data-aos="fade-left">
+                    <div class="highlight-content">
+                        <h3>Hill Stations</h3>
+                        <p>Escape to the misty mountains and tea plantations of Munnar, Wayanad, and other hill stations.</p>
+                    </div>
+                    <div class="highlight-image">
+                        <img src="https://picsum.photos/seed/hills/300/200.jpg" alt="Kerala Hill Stations">
+                    </div>
+                </div>
+                
+                <div class="highlight-item" data-aos="fade-right">
+                    <div class="highlight-content">
+                        <h3>Beaches</h3>
+                        <p>Relax on pristine beaches like Kovalam and Varkala, perfect for swimming and sunset views.</p>
+                    </div>
+                    <div class="highlight-image">
+                        <img src="https://picsum.photos/seed/beaches/300/200.jpg" alt="Kerala Beaches">
+                    </div>
+                </div>
+                
+                <div class="highlight-item" data-aos="fade-left">
+                    <div class="highlight-content">
+                        <h3>Wildlife</h3>
+                        <p>Explore rich biodiversity at Periyar Wildlife Sanctuary and other protected areas.</p>
+                    </div>
+                    <div class="highlight-image">
+                        <img src="https://picsum.photos/seed/wildlife/300/200.jpg" alt="Kerala Wildlife">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta">
+        <div class="container">
+            <div class="cta-content" data-aos="zoom-in">
+                <h2>Ready to Explore Kerala?</h2>
+                <p>Start planning your dream trip to God's Own Country with Yaathra</p>
+                <a href="{{ url_for('plan') }}" class="btn btn-primary btn-large">Start Planning Now</a>
+            </div>
+        </div>
+    </section>
+{% endblock %}

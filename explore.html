@@ -1,0 +1,321 @@
+{% extends "base.html" %}
+
+{% block title %}Explore Destinations - Yaathra{% endblock %}
+
+{% block content %}
+    <!-- Page Header -->
+    <section class="page-header">
+        <div class="container">
+            <h1 data-aos="fade-up">Explore Kerala</h1>
+            <p data-aos="fade-up" data-aos-delay="100">
+                Discover the diverse landscapes and experiences that make Kerala truly special
+            </p>
+        </div>
+    </section>
+
+    <!-- Search and Filter Section -->
+    <section class="search-filter">
+        <div class="container">
+            <div class="search-bar" data-aos="fade-up">
+                <form method="GET" action="{{ url_for('explore') }}" class="search-form">
+                    <div class="search-input-wrapper">
+                        <svg class="search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="11" cy="11" r="8"></circle>
+                            <path d="m21 21-4.35-4.35"></path>
+                        </svg>
+                        <input type="text" 
+                               name="search" 
+                               placeholder="Search destinations, activities, or experiences..." 
+                               value="{{ search_query }}"
+                               class="search-input">
+                        {% if search_query %}
+                            <a href="{{ url_for('explore') }}" class="clear-search">×</a>
+                        {% endif %}
+                    </div>
+                    <button type="submit" class="btn btn-primary">Search</button>
+                </form>
+            </div>
+            
+            <div class="filter-controls" data-aos="fade-up" data-aos-delay="100">
+                <div class="filter-tabs">
+                    <a href="{{ url_for('explore') }}" 
+                       class="filter-tab {% if not category_filter %}active{% endif %}">
+                        All Places
+                    </a>
+                    {% for category in categories %}
+                    <a href="{{ url_for('explore', category=category, search=search_query, sort=sort_by) }}" 
+                       class="filter-tab {% if category_filter == category %}active{% endif %}">
+                        {{ category.title() }}
+                    </a>
+                    {% endfor %}
+                </div>
+                
+                <div class="sort-controls">
+                    <label for="sort-select">Sort by:</label>
+                    <select id="sort-select" onchange="applySorting(this.value)">
+                        <option value="name" {% if sort_by == 'name' %}selected{% endif %}>Name</option>
+                        <option value="budget" {% if sort_by == 'budget' %}selected{% endif %}>Budget</option>
+                        <option value="popularity" {% if sort_by == 'popularity' %}selected{% endif %}>Popularity</option>
+                    </select>
+                </div>
+            </div>
+            
+            <!-- Active Filters Display -->
+            {% if search_query or category_filter %}
+            <div class="active-filters" data-aos="fade-up" data-aos-delay="150">
+                <span class="active-filters-label">Active filters:</span>
+                {% if search_query %}
+                    <span class="active-filter">
+                        Search: "{{ search_query }}"
+                        <a href="{{ url_for('explore', category=category_filter, sort=sort_by) }}" class="remove-filter">×</a>
+                    </span>
+                {% endif %}
+                {% if category_filter %}
+                    <span class="active-filter">
+                        Category: {{ category_filter.title() }}
+                        <a href="{{ url_for('explore', search=search_query, sort=sort_by) }}" class="remove-filter">×</a>
+                    </span>
+                {% endif %}
+                <a href="{{ url_for('explore') }}" class="clear-all-filters">Clear all</a>
+            </div>
+            {% endif %}
+        </div>
+    </section>
+
+    <!-- Destinations Grid -->
+    <section class="destinations">
+        <div class="container">
+            {% if places %}
+                <div class="places-grid">
+                    {% for place in places %}
+                    <div class="place-card" data-aos="zoom-in" data-aos-delay="{{ loop.index * 50 }}">
+                        <div class="place-image">
+                            <img src="{{ url_for('static', filename='images/' + place.image) }}"
+                                 alt="{{ place.title }}"
+                                 onerror="this.src='{{ url_for('static', filename='images/nature.jpg') }}'">
+                            <div class="place-category">{{ place.category.title() }}</div>
+                            {% if 'user_id' in session %}
+                                <div class="wishlist-btn">
+                                    <a href="{{ url_for('add_to_wishlist', place_name=place.name) }}" 
+                                       class="wishlist-icon" 
+                                       title="Add to Wishlist">
+                                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+                                        </svg>
+                                    </a>
+                                </div>
+                            {% endif %}
+                        </div>
+                        <div class="place-content">
+                            <h3>{{ place.title }}</h3>
+                            <p>{{ place.description[:120] }}...</p>
+                            <div class="place-meta">
+                                <span class="budget">{{ place.avg_budget }} Budget</span>
+                                <span class="time">{{ place.best_time }}</span>
+                            </div>
+                            <div class="place-activities">
+                                {% for activity in place.activities[:3] %}
+                                    <span class="activity-tag">{{ activity }}</span>
+                                {% endfor %}
+                            </div>
+                            <a href="{{ url_for('place_detail', place_name=place.name) }}" 
+                               class="btn btn-outline">
+                                View Details
+                            </a>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="no-results" data-aos="fade-up">
+                    <div class="no-results-icon">
+                        <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="11" cy="11" r="8"></circle>
+                            <path d="m21 21-4.35-4.35"></path>
+                        </svg>
+                    </div>
+                    <h3>No destinations found</h3>
+                    <p>Try adjusting your search or filters to find what you're looking for.</p>
+                    <a href="{{ url_for('explore') }}" class="btn btn-primary">View All Destinations</a>
+                </div>
+            {% endif %}
+        </div>
+    </section>
+
+    <!-- Info Section -->
+    <section class="info-section">
+        <div class="container">
+            <div class="info-grid">
+                <div class="info-card" data-aos="fade-up">
+                    <div class="info-icon">
+                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <polyline points="12 6 12 12 16 14"></polyline>
+                        </svg>
+                    </div>
+                    <h3>Best Time to Visit</h3>
+                    <p>September to March offers pleasant weather for most destinations. Monsoon season (June-August) is perfect for Ayurveda treatments.</p>
+                </div>
+                
+                <div class="info-card" data-aos="fade-up" data-aos-delay="100">
+                    <div class="info-icon">
+                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M12 2L2 7v10c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V7l-10-5z"></path>
+                        </svg>
+                    </div>
+                    <h3>Travel Tips</h3>
+                    <p>Book accommodations in advance during peak season. Carry light cotton clothes and comfortable walking shoes.</p>
+                </div>
+                
+                <div class="info-card" data-aos="fade-up" data-aos-delay="200">
+                    <div class="info-icon">
+                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                            <polyline points="14 2 14 8 20 8"></polyline>
+                            <line x1="16" y1="13" x2="8" y2="13"></line>
+                            <line x1="16" y1="17" x2="8" y2="17"></line>
+                            <polyline points="10 9 9 9 8 9"></polyline>
+                        </svg>
+                    </div>
+                    <h3>Local Culture</h3>
+                    <p>Respect local customs and traditions. Try Kerala cuisine, attend festivals, and interact with friendly locals.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// Enhanced search functionality
+document.querySelector('.search-input').addEventListener('keypress', function(e) {
+    if (e.key === 'Enter') {
+        this.form.submit();
+    }
+});
+
+// Live search (debounced)
+let searchTimeout;
+document.querySelector('.search-input').addEventListener('input', function(e) {
+    clearTimeout(searchTimeout);
+    const query = e.target.value.trim();
+    
+    if (query.length > 2) {
+        searchTimeout = setTimeout(() => {
+            // Update URL without page reload for better UX
+            const url = new URL(window.location);
+            url.searchParams.set('search', query);
+            window.history.pushState({}, '', url);
+            
+            // In a real app, this would trigger an AJAX search
+            // For now, we'll just show loading state
+            showSearchLoading();
+        }, 300);
+    }
+});
+
+// Sorting functionality
+function applySorting(sortValue) {
+    const url = new URL(window.location);
+    url.searchParams.set('sort', sortValue);
+    window.location.href = url.toString();
+}
+
+// Filter tab animations
+document.querySelectorAll('.filter-tab').forEach(tab => {
+    tab.addEventListener('click', function(e) {
+        // Add ripple effect
+        const ripple = document.createElement('span');
+        ripple.classList.add('ripple');
+        this.appendChild(ripple);
+        
+        setTimeout(() => {
+            ripple.remove();
+        }, 600);
+    });
+});
+
+// Search loading state
+function showSearchLoading() {
+    const placesGrid = document.querySelector('.places-grid');
+    if (placesGrid) {
+        placesGrid.style.opacity = '0.5';
+        placesGrid.style.pointerEvents = 'none';
+    }
+}
+
+// Clear search functionality
+document.querySelector('.clear-search')?.addEventListener('click', function(e) {
+    e.preventDefault();
+    document.querySelector('.search-input').value = '';
+    const url = new URL(window.location);
+    url.searchParams.delete('search');
+    window.location.href = url.toString();
+});
+
+// Keyboard navigation for filter tabs
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Tab') {
+        const activeElement = document.activeElement;
+        if (activeElement.classList.contains('filter-tab')) {
+            const tabs = Array.from(document.querySelectorAll('.filter-tab'));
+            const currentIndex = tabs.indexOf(activeElement);
+            
+            if (e.shiftKey && currentIndex > 0) {
+                e.preventDefault();
+                tabs[currentIndex - 1].focus();
+            } else if (!e.shiftKey && currentIndex < tabs.length - 1) {
+                e.preventDefault();
+                tabs[currentIndex + 1].focus();
+            }
+        }
+    }
+});
+
+// Accessibility improvements
+document.querySelectorAll('.filter-tab').forEach(tab => {
+    tab.setAttribute('role', 'button');
+    tab.setAttribute('tabindex', '0');
+    
+    tab.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            window.location.href = this.href;
+        }
+    });
+});
+
+// Analytics tracking for search and filters
+function trackSearchEvent(query) {
+    if (typeof gtag !== 'undefined') {
+        gtag('event', 'search', {
+            'search_term': query
+        });
+    }
+}
+
+function trackFilterEvent(category) {
+    if (typeof gtag !== 'undefined') {
+        gtag('event', 'filter', {
+            'filter_category': category
+        });
+    }
+}
+
+// Track filter clicks
+document.querySelectorAll('.filter-tab').forEach(tab => {
+    tab.addEventListener('click', function() {
+        const category = this.textContent.trim();
+        trackFilterEvent(category);
+    });
+});
+
+// Track search submissions
+document.querySelector('.search-form').addEventListener('submit', function() {
+    const searchQuery = document.querySelector('.search-input').value.trim();
+    if (searchQuery) {
+        trackSearchEvent(searchQuery);
+    }
+});
+</script>
+{% endblock %}

@@ -1,0 +1,322 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard - Yaathra{% endblock %}
+
+{% block content %}
+    <!-- Dashboard Header -->
+    <section class="dashboard-header">
+        <div class="container">
+            <div class="dashboard-welcome" data-aos="fade-up">
+                <h1>Welcome back, {{ user.username }}!</h1>
+                <p>Continue planning your Kerala adventures</p>
+            </div>
+            
+            <div class="dashboard-stats" data-aos="fade-up" data-aos-delay="100">
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M12 2L2 7v10c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V7l-10-5z"></path>
+                        </svg>
+                    </div>
+                    <div class="stat-content">
+                        <h3>{{ trips|length }}</h3>
+                        <p>Trip Plans</p>
+                    </div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+                        </svg>
+                    </div>
+                    <div class="stat-content">
+                        <h3>{{ wishlist_items|length }}</h3>
+                        <p>Wishlist Items</p>
+                    </div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <path d="M12 6v6l4 2"></path>
+                        </svg>
+                    </div>
+                    <div class="stat-content">
+                        <h3>{{ trips|length if trips else 0 }}</h3>
+                        <p>Days Planned</p>
+                    </div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
+                        </svg>
+                    </div>
+                    <div class="stat-content">
+                        <h3>{{ wishlist_items|length if wishlist_items else 0 }}</h3>
+                        <p>Places to Visit</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Quick Actions -->
+    <section class="quick-actions">
+        <div class="container">
+            <h2 data-aos="fade-up">Quick Actions</h2>
+            <div class="actions-grid">
+                <a href="{{ url_for('plan') }}" class="action-card" data-aos="zoom-in" data-aos-delay="100">
+                    <div class="action-icon">
+                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M12 2L2 7v10c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V7l-10-5z"></path>
+                        </svg>
+                    </div>
+                    <h3>Plan New Trip</h3>
+                    <p>Create a new customized itinerary</p>
+                </a>
+                
+                <a href="{{ url_for('explore') }}" class="action-card" data-aos="zoom-in" data-aos-delay="200">
+                    <div class="action-icon">
+                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <path d="M8 12h8"></path>
+                            <path d="M12 8v8"></path>
+                        </svg>
+                    </div>
+                    <h3>Explore Destinations</h3>
+                    <p>Discover new places to visit</p>
+                </a>
+                
+                <a href="#" class="action-card" data-aos="zoom-in" data-aos-delay="300">
+                    <div class="action-icon">
+                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                            <polyline points="14 2 14 8 20 8"></polyline>
+                        </svg>
+                    </div>
+                    <h3>Travel Tips</h3>
+                    <p>Get expert travel advice</p>
+                </a>
+                
+                <a href="#" class="action-card" data-aos="zoom-in" data-aos-delay="400">
+                    <div class="action-icon">
+                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
+                        </svg>
+                    </div>
+                    <h3>Profile Settings</h3>
+                    <p>Manage your account</p>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Recent Trip Plans -->
+    <section class="recent-trips">
+        <div class="container">
+            <div class="section-header">
+                <h2 data-aos="fade-up">Recent Trip Plans</h2>
+                <a href="#" class="btn btn-outline" data-aos="fade-up" data-aos-delay="100">View All</a>
+            </div>
+            
+            {% if trips %}
+                <div class="trips-grid">
+                    {% for trip in trips[:3] %}
+                    <div class="trip-card" data-aos="zoom-in" data-aos-delay="{{ loop.index * 100 }}">
+                        <div class="trip-header">
+                            <h3>{{ trip.destination.title() }}</h3>
+                            <div class="trip-meta">
+                                <span class="duration">{{ trip.days }} days</span>
+                                <span class="budget">{{ trip.budget }} budget</span>
+                            </div>
+                        </div>
+                        <div class="trip-content">
+                            {% set plan_data = trip.plan_text | from_json %}
+                            <p>{{ plan_data.itinerary[0] if plan_data.itinerary else 'No itinerary available' }}</p>
+                            <div class="trip-actions">
+                                <button class="btn btn-sm btn-outline" onclick="viewTripDetails('{{ trip.id }}')">
+                                    View Details
+                                </button>
+                                <button class="btn btn-sm btn-text" onclick="editTrip('{{ trip.id }}')">
+                                    Edit
+                                </button>
+                                <button class="btn btn-sm btn-text danger" onclick="deleteTrip('{{ trip.id }}')">
+                                    Delete
+                                </button>
+                            </div>
+                        </div>
+                        <div class="trip-footer">
+                            <small>Created {{ trip.created_at.strftime('%B %d, %Y') }}</small>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="empty-state" data-aos="fade-up">
+                    <div class="empty-icon">
+                        <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M12 2L2 7v10c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V7l-10-5z"></path>
+                        </svg>
+                    </div>
+                    <h3>No Trip Plans Yet</h3>
+                    <p>Start planning your Kerala adventure by creating your first trip plan</p>
+                    <a href="{{ url_for('plan') }}" class="btn btn-primary">Create Your First Plan</a>
+                </div>
+            {% endif %}
+        </div>
+    </section>
+
+    <!-- Wishlist -->
+    <section class="wishlist-section">
+        <div class="container">
+            <div class="section-header">
+                <h2 data-aos="fade-up">Your Wishlist</h2>
+                <a href="{{ url_for('explore') }}" class="btn btn-outline" data-aos="fade-up" data-aos-delay="100">Explore More</a>
+            </div>
+            
+            {% if wishlist_items %}
+                <div class="wishlist-grid">
+                    {% for item in wishlist_items[:4] %}
+                    <div class="wishlist-card" data-aos="zoom-in" data-aos-delay="{{ loop.index * 100 }}">
+                        <div class="wishlist-image">
+                            <img src="{{ url_for('static', filename='images/' + item.place.image) }}" 
+                                 alt="{{ item.place.title }}"
+                                 onerror="this.src='https://picsum.photos/seed/{{ item.place.name }}/300/200.jpg'">
+                            <div class="wishlist-category">{{ item.place.category.title() }}</div>
+                        </div>
+                        <div class="wishlist-content">
+                            <h4>{{ item.place.title }}</h4>
+                            <p>{{ item.place.description[:80] }}...</p>
+                            <div class="wishlist-actions">
+                                <a href="{{ url_for('place_detail', place_name=item.place.name) }}" 
+                                   class="btn btn-sm btn-outline">
+                                    View Details
+                                </a>
+                                <a href="{{ url_for('remove_from_wishlist', place_name=item.place.name) }}" 
+                                   class="btn btn-sm btn-text danger">
+                                    Remove
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="empty-state" data-aos="fade-up">
+                    <div class="empty-icon">
+                        <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+                        </svg>
+                    </div>
+                    <h3>Your Wishlist is Empty</h3>
+                    <p>Start adding destinations you'd like to visit</p>
+                    <a href="{{ url_for('explore') }}" class="btn btn-primary">Explore Destinations</a>
+                </div>
+            {% endif %}
+        </div>
+    </section>
+
+    <!-- Recommendations -->
+    <section class="recommendations">
+        <div class="container">
+            <h2 data-aos="fade-up">Recommended for You</h2>
+            <div class="recommendation-grid">
+                <div class="recommendation-card" data-aos="zoom-in" data-aos-delay="100">
+                    <div class="recommendation-image">
+                        <img src="https://picsum.photos/seed/munnar/300/200.jpg" alt="Munnar">
+                    </div>
+                    <div class="recommendation-content">
+                        <h4>Munnar Tea Gardens</h4>
+                        <p>Perfect for nature lovers and photography enthusiasts</p>
+                        <a href="{{ url_for('place_detail', place_name='munnar') }}" class="btn btn-sm btn-outline">
+                            Explore
+                        </a>
+                    </div>
+                </div>
+                
+                <div class="recommendation-card" data-aos="zoom-in" data-aos-delay="200">
+                    <div class="recommendation-image">
+                        <img src="https://picsum.photos/seed/alleppey/300/200.jpg" alt="Alleppey">
+                    </div>
+                    <div class="recommendation-content">
+                        <h4>Alleppey Backwaters</h4>
+                        <p>Experience the serene beauty of Kerala's backwaters</p>
+                        <a href="{{ url_for('place_detail', place_name='alleppey') }}" class="btn btn-sm btn-outline">
+                            Explore
+                        </a>
+                    </div>
+                </div>
+                
+                <div class="recommendation-card" data-aos="zoom-in" data-aos-delay="300">
+                    <div class="recommendation-image">
+                        <img src="https://picsum.photos/seed/kovalam/300/200.jpg" alt="Kovalam">
+                    </div>
+                    <div class="recommendation-content">
+                        <h4>Kovalam Beach</h4>
+                        <p>Relax on pristine beaches and enjoy water sports</p>
+                        <a href="{{ url_for('place_detail', place_name='kovalam') }}" class="btn btn-sm btn-outline">
+                            Explore
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// Trip management functions
+function viewTripDetails(tripId) {
+    // In a real app, this would open a modal or navigate to a detail page
+    console.log('View trip details:', tripId);
+    alert('Trip details feature coming soon!');
+}
+
+function editTrip(tripId) {
+    // In a real app, this would open an edit form
+    console.log('Edit trip:', tripId);
+    alert('Edit trip feature coming soon!');
+}
+
+function deleteTrip(tripId) {
+    if (confirm('Are you sure you want to delete this trip plan?')) {
+        // In a real app, this would make an API call to delete the trip
+        console.log('Delete trip:', tripId);
+        alert('Delete trip feature coming soon!');
+    }
+}
+
+// Animate stats on scroll
+const observerOptions = {
+    threshold: 0.5
+};
+
+const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+        if (entry.isIntersecting) {
+            entry.target.classList.add('animate');
+        }
+    });
+}, observerOptions);
+
+document.querySelectorAll('.stat-card').forEach(card => {
+    observer.observe(card);
+});
+
+// Add smooth transitions
+document.querySelectorAll('.trip-card, .wishlist-card').forEach(card => {
+    card.addEventListener('mouseenter', function() {
+        this.style.transform = 'translateY(-5px)';
+    });
+    
+    card.addEventListener('mouseleave', function() {
+        this.style.transform = 'translateY(0)';
+    });
+});
+</script>
+{% endblock %}

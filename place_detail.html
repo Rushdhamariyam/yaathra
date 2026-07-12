@@ -1,0 +1,460 @@
+{% extends "base.html" %}
+
+{% block title %}{{ place.title }} - Yaathra{% endblock %}
+
+{% block content %}
+    <!-- Place Header -->
+    <section class="place-header">
+        <div class="place-hero">
+            {% if place.image %} <img src="{{ url_for('static', filename='images/' + place.image) }}"
+              alt="{{ place.title }}">
+            {% else %} <img src="{{ url_for('static', filename='images/nature.jpg') }}"
+              alt="Default Image">
+            {% endif %}
+            <div class="place-hero-overlay"></div>
+            <div class="place-hero-content">
+                <h1 data-aos="fade-up">{{ place.title if place else 'Place Details' }}</h1>
+                <div class="place-badges" data-aos="fade-up" data-aos-delay="100">
+                    <span class="badge category">{{ place.category.title() if place and place.category else 'Unknown' }}</span>
+                    <span class="badge budget">{{ place.avg_budget + ' Budget' if place and place.avg_budget else 'Budget Info' }}</span>
+                    <span class="badge time">{{ place.best_time if place and place.best_time else 'Visit Anytime' }}</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Place Details -->
+    <section class="place-details">
+        <div class="container">
+            <div class="place-content-grid">
+                <!-- Main Content -->
+                <div class="place-main-content">
+                    <!-- Description -->
+                    <div class="content-section" data-aos="fade-right">
+                        <h2>About {{ place.title }}</h2>
+                        <p>{{ place.description }}</p>
+                    </div>
+
+                    <!-- Activities -->
+                    <div class="content-section" data-aos="fade-right" data-aos-delay="100">
+                        <div class="section-card">
+                            <div class="section-header">
+                                <h3>🎯 Activities & Experiences</h3>
+                                <p>Discover the best things to do in {{ place.title }}</p>
+                            </div>
+                            <div class="activities-list">
+                                {% set activities = place.activities | from_json %}
+                                {% for activity in activities %}
+                                    <div class="activity-card" data-aos="zoom-in" data-aos-delay="{{ loop.index * 50 }}">
+                                        <div class="activity-icon">
+                                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                                <polyline points="20 6 9 17 4 12"></polyline>
+                                            </svg>
+                                        </div>
+                                        <h4>{{ activity }}</h4>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Food -->
+                    <div class="content-section" data-aos="fade-right" data-aos-delay="200">
+                        <div class="section-card">
+                            <div class="section-header">
+                                <h3>🍽️ Culinary Delights</h3>
+                                <p>Experience the authentic flavors of Kerala cuisine</p>
+                            </div>
+                            <div class="food-grid">
+                                {% set food_items = place.food | from_json %}
+                                {% for food in food_items %}
+                                    <div class="food-card" data-aos="zoom-in" data-aos-delay="{{ loop.index * 100 }}">
+                                        <div class="food-icon">🍽️</div>
+                                        <h4>{{ food }}</h4>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Culture -->
+                    <div class="content-section" data-aos="fade-right" data-aos-delay="300">
+                        <div class="section-card">
+                            <div class="section-header">
+                                <h3>🏛️ Local Culture & Heritage</h3>
+                                <p>Experience the rich cultural traditions of {{ place.title }}</p>
+                            </div>
+                            <div class="culture-list">
+                                {% set culture_items = place.culture | from_json %}
+                                {% for culture in culture_items %}
+                                    <div class="culture-card" data-aos="zoom-in" data-aos-delay="{{ loop.index * 150 }}">
+                                        <div class="culture-icon">🏛️</div>
+                                        <div class="culture-content">
+                                            <h4>{{ culture }}</h4>
+                                            <p>Experience authentic cultural heritage</p>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Map -->
+                    <div class="content-section" data-aos="fade-right" data-aos-delay="400">
+                        <h3>Location</h3>
+                        <div class="map-container">
+                            <iframe 
+                                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d31109.3634628229!2d76.94565731562498!3d8.506036994839633!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3b0907d000000001%3A0x1c4b8c7b8b8b8b8b!2s{{ place.title }}!5e0!3m2!1sen!2sin!4v1234567890"
+                                width="100%" 
+                                height="300" 
+                                style="border:0; border-radius: 8px;" 
+                                allowfullscreen="" 
+                                loading="lazy">
+                            </iframe>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sidebar -->
+                <div class="place-sidebar">
+                    <!-- Action Buttons -->
+                    <div class="sidebar-card" data-aos="fade-left">
+                        <h3>Plan Your Visit</h3>
+                        <div class="action-buttons">
+                            <a href="{{ url_for('plan') }}?destination={{ place.title }}" 
+                               class="btn btn-primary btn-block">
+                                Plan Trip to {{ place.title }}
+                            </a>
+                            {% if 'user_id' in session %}
+                                {% if in_wishlist %}
+                                    <a href="{{ url_for('remove_from_wishlist', place_name=place.title) }}" 
+                                       class="btn btn-outline btn-block">
+                                        Remove from Wishlist
+                                    </a>
+                                {% else %}
+                                    <a href="{{ url_for('add_to_wishlist', place_name=place.title) }}" 
+                                       class="btn btn-outline btn-block">
+                                        Add to Wishlist
+                                    </a>
+                                {% endif %}
+                            {% else %}
+                                <a href="{{ url_for('login') }}" class="btn btn-outline btn-block">
+                                    Login to Save
+                                </a>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <!-- Quick Info -->
+                    <div class="sidebar-card" data-aos="fade-left" data-aos-delay="100">
+                        <h3>Quick Info</h3>
+                        <div class="info-list">
+                            <div class="info-item">
+                                <strong>Best Time to Visit:</strong>
+                                <span>{{ place.best_time }}</span>
+                            </div>
+                            <div class="info-item">
+                                <strong>Weather:</strong>
+                                <span>{{ place.weather }}</span>
+                            </div>
+                            <div class="info-item">
+                                <strong>Budget:</strong>
+                                <span>{{ place.budget }}</span>
+                            </div>
+                            <div class="info-item">
+                                <strong>Category:</strong>
+                                <span>{{ place.category.title() }}</span>
+                            </div>
+                            <div class="info-item">
+                                <strong>Duration:</strong>
+                                <span>2-3 days recommended</span>
+                            </div>
+                        </div>
+                        </div>
+                    </div>
+
+                    <!-- Weather -->
+                    <div class="sidebar-card" data-aos="fade-left" data-aos-delay="200">
+                        <h3>Weather</h3>
+                        <div class="weather-info">
+                            <div class="weather-icon">
+                                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <circle cx="12" cy="12" r="5"></circle>
+                                    <line x1="12" y1="1" x2="12" y2="3"></line>
+                                    <line x1="12" y1="21" x2="12" y2="23"></line>
+                                    <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                                    <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                                    <line x1="1" y1="12" x2="3" y2="12"></line>
+                                    <line x1="21" y1="12" x2="23" y2="12"></line>
+                                    <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                                    <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                                </svg>
+                            </div>
+                            <p>Pleasant climate throughout the year with moderate temperatures.</p>
+                        </div>
+                    </div>
+
+                    <!-- Related Places -->
+                    <div class="sidebar-card" data-aos="fade-left" data-aos-delay="300">
+                        <h3>Related Destinations</h3>
+                        <div class="related-places">
+                            <div class="related-place">
+                                <img src="https://picsum.photos/seed/related1/60/60.jpg" alt="Related Place">
+                                <div class="related-place-info">
+                                    <h4>Explore Similar</h4>
+                                    <p>Discover more {{ place.category }} destinations</p>
+                                </div>
+                            </div>
+                        </div>
+                        <a href="{{ url_for('explore', category=place.category) }}" class="btn btn-text">
+                            View All {{ place.category.title() }} Places
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Hotels Section -->
+    <section class="hotels-section">
+        <div class="container">
+            <h2 data-aos="fade-up">Recommended Hotels in {{ place.title }}</h2>
+            <div class="hotels-grid">
+                {% for hotel in place.hotels %}
+                <div class="hotel-card" data-aos="fade-up" data-aos-delay="{{ loop.index * 100 }}">
+                    <div class="hotel-image">
+                        {% if hotel.image %}
+                        <img src="{{ url_for('static', filename='images/' + hotel.image) }}" 
+                             alt="{{ hotel.name }}"
+                             onerror="this.src='https://picsum.photos/seed/{{ hotel.name }}/300/200.jpg'">
+                        {% else %}
+                        <img src="https://picsum.photos/seed/{{ hotel.name }}/300/200.jpg" alt="{{ hotel.name }}">
+                        {% endif %}
+                        <div class="hotel-rating">
+                            <span class="stars">
+                                {% for i in range(5) %}
+                                    {% if i < hotel.rating %}
+                                        â
+                                    {% else %}
+                                        â
+                                    {% endif %}
+                                {% endfor %}
+                            </span>
+                            <span class="rating-text">{{ hotel.rating }}/5</span>
+                        </div>
+                    </div>
+                    <div class="hotel-content">
+                        <h3>{{ hotel.name }}</h3>
+                        <div class="hotel-price">
+                            <span class="price">₹{{ hotel.price }}</span>
+                            <span class="price-unit">per night</span>
+                        </div>
+                        <div class="hotel-rating">
+                            <span class="stars">
+                                {% for i in range(5) %}
+                                    {% if i < hotel.rating %}
+                                        ⭐
+                                    {% else %}
+                                        ☆
+                                    {% endif %}
+                                {% endfor %}
+                            </span>
+                            <span class="rating-text">{{ hotel.rating }}/5</span>
+                        </div>
+                        <div class="hotel-contact">
+                            <p><strong>Rating:</strong> {{ hotel.rating }} ⭐</p>
+                        </div>
+                        <a href="{{ url_for('plan') }}?destination={{ place.title }}" class="btn btn-primary btn-sm">
+                            Book Now
+                        </a>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+
+    <!-- Reviews Section (Coming Soon) -->
+    <section class="reviews-section">
+        <div class="container">
+            <h2 data-aos="fade-up">Guest Reviews</h2>
+            <div class="coming-soon" data-aos="fade-up">
+                <p>Reviews feature coming soon! Share your travel experiences with the community.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Image Gallery -->
+    <section class="gallery-section">
+        <div class="container">
+            <h2 data-aos="fade-up">Photo Gallery</h2>
+            <div class="gallery-grid">
+                {% if place.gallery_images %}
+                    {% for image in place.gallery_images %}
+                    <div class="gallery-item {% if loop.first %}gallery-large{% elif loop.last %}gallery-wide{% endif %}" data-aos="fade-up" data-aos-delay="{{ loop.index * 100 }}">
+                        <img src="{{ url_for('static', filename=image) }}" 
+                             alt="{{ place.title }}" 
+                             onerror="this.src='/static/images/default/default1.jpg'">
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="gallery-item gallery-large" data-aos="fade-up">
+                        <img src="{{ url_for('static', filename='images/default/default1.jpg') }}" alt="{{ place.title }}">
+                    </div>
+                    <div class="gallery-item" data-aos="fade-up" data-aos-delay="100">
+                        <img src="{{ url_for('static', filename='images/default/default2.jpg') }}" alt="{{ place.title }}">
+                    </div>
+                    <div class="gallery-item" data-aos="fade-up" data-aos-delay="200">
+                        <img src="{{ url_for('static', filename='images/default/default3.jpg') }}" alt="{{ place.title }}">
+                    </div>
+                    <div class="gallery-item" data-aos="fade-up" data-aos-delay="300">
+                        <img src="{{ url_for('static', filename='images/default/default1.jpg') }}" alt="{{ place.title }}">
+                    </div>
+                    <div class="gallery-item gallery-wide" data-aos="fade-up" data-aos-delay="400">
+                        <img src="{{ url_for('static', filename='images/default/default2.jpg') }}" alt="{{ place.title }}">
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </section>
+
+    <!-- Travel Tips -->
+    <section class="travel-tips">
+        <div class="container">
+            <h2 data-aos="fade-up">Travel Tips for {{ place.title }}</h2>
+            <div class="tips-grid">
+                <div class="tip-card" data-aos="zoom-in" data-aos-delay="100">
+                    <div class="tip-icon">
+                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                            <polyline points="14 2 14 8 20 8"></polyline>
+                        </svg>
+                    </div>
+                    <h4>Documentation</h4>
+                    <p>Carry valid ID proof and necessary permits for certain areas.</p>
+                </div>
+                
+                <div class="tip-card" data-aos="zoom-in" data-aos-delay="200">
+                    <div class="tip-icon">
+                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M12 2L2 7v10c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V7l-10-5z"></path>
+                        </svg>
+                    </div>
+                    <h4>Safety</h4>
+                    <p>Follow local guidelines and stay updated on weather conditions.</p>
+                </div>
+                
+                <div class="tip-card" data-aos="zoom-in" data-aos-delay="300">
+                    <div class="tip-icon">
+                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <path d="M8 14s1.5 2 4 2 4-2 4-2"></path>
+                            <line x1="9" y1="9" x2="9.01" y2="9"></line>
+                            <line x1="15" y1="9" x2="15.01" y2="9"></line>
+                        </svg>
+                    </div>
+                    <h4>Local Etiquette</h4>
+                    <p>Respect local customs and traditions. Dress modestly at religious sites.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// Smooth scroll to sections
+document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+        const target = document.querySelector(this.getAttribute('href'));
+        if (target) {
+            target.scrollIntoView({
+                behavior: 'smooth',
+                block: 'start'
+            });
+        }
+    });
+});
+
+// Add parallax effect to hero image
+window.addEventListener('scroll', () => {
+    const scrolled = window.pageYOffset;
+    const hero = document.querySelector('.place-hero img');
+    if (hero) {
+        hero.style.transform = `translateY(${scrolled * 0.5}px)`;
+    }
+});
+
+// Show hotel details modal
+function showHotelDetails(hotelId) {
+    // In a real app, this would fetch hotel details from the server
+    showNotification('Hotel details feature coming soon!', 'info');
+}
+
+// Show add review form
+function showAddReviewForm() {
+    const modalContent = `
+        <div class="review-form">
+            <h3>Write a Review</h3>
+            <form id="reviewForm">
+                <div class="form-group">
+                    <label>Rating</label>
+                    <div class="star-rating">
+                        <input type="radio" name="rating" value="5" id="star5">
+                        <label for="star5">â</label>
+                        <input type="radio" name="rating" value="4" id="star4">
+                        <label for="star4">â</label>
+                        <input type="radio" name="rating" value="3" id="star3">
+                        <label for="star3">â</label>
+                        <input type="radio" name="rating" value="2" id="star2">
+                        <label for="star2">â</label>
+                        <input type="radio" name="rating" value="1" id="star1">
+                        <label for="star1">â</label>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="reviewComment">Your Review</label>
+                    <textarea id="reviewComment" rows="4" required></textarea>
+                </div>
+                <div class="form-actions">
+                    <button type="button" onclick="closeModal()" class="btn btn-outline">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Submit Review</button>
+                </div>
+            </form>
+        </div>
+    `;
+    
+    openModal(modalContent);
+    
+    // Handle form submission
+    document.getElementById('reviewForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        const rating = document.querySelector('input[name="rating"]:checked');
+        const comment = document.getElementById('reviewComment').value;
+        
+        if (!rating) {
+            showNotification('Please select a rating', 'error');
+            return;
+        }
+        
+        // In a real app, this would submit the review to the server
+        showNotification('Review submitted successfully!', 'success');
+        closeModal();
+    });
+}
+
+// Gallery lightbox functionality
+document.querySelectorAll('.gallery-item img').forEach(img => {
+    img.addEventListener('click', function() {
+        const modalContent = `
+            <div class="gallery-lightbox">
+                <img src="${this.src}" alt="${this.alt}">
+                <button onclick="closeModal()" class="lightbox-close">×</button>
+            </div>
+        `;
+        openModal(modalContent);
+    });
+});
+</script>
+{% endblock %}
